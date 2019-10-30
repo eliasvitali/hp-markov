@@ -6,7 +6,7 @@ import seaborn as sns
 import numpy as np
 import glob
 
-file_names = glob.glob('books/hp1.txt')
+file_names = glob.glob('Books/hp1.txt')
 len(file_names)
 
 def get_sentences(file_name):
