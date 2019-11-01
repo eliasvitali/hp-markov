@@ -9,55 +9,65 @@ import glob
 file_names = glob.glob('Books/hp1.txt')
 len(file_names)
 
+#Get all sentences in the book by splitting on full stops
 def get_sentences(file_name):
     with open(file_name, 'r') as f:
         return f.read().split('.')
 
-MIN_LENGTH = 15
+MIN_LENGTH = 15                                                                     #Min sentence length
 sentences = []
+
+#Store sentences in a list
 for file_name in file_names:
     sentences+=get_sentences(file_name)
 
+#Loop through sentences and replace line breaks with spaces
 sentences = [sentence.replace('\n','') for sentence in sentences]
 sentences = [sentence.replace('\t','') for sentence in sentences]
-sentences = [sentence for sentence in sentences if len(sentence)>MIN_LENGTH]
+sentences = [sentence for sentence in sentences if len(sentence)>MIN_LENGTH]        #Minimum sentence length (so we don't have sentences like "I do. Yes." etc
 
-lengths = [len(sentence) for sentence in sentences]
+
+lengths = [len(sentence) for sentence in sentences]                                 #list which stores the lengths of various parameters
 lengths = pd.Series(lengths)
 lengths.quantile(.8)
-lengths.describe()
+lengths.describe()                                                                  #prints some parameters to the console
 
 
 #--------- Load Whole Corpus----------------#
 
-corpus = ""
+corpus = ""                                                                         #string that stores the corpus
 for file_name in file_names:
     with open(file_name, 'r') as f:
             corpus+=f.read()
 
+#pad evert punctuation mark with spaces to treat them as tokens (i.e. treat them as words)
 corpus = corpus.replace('\n',' ')
 corpus = corpus.replace('\t',' ')
 corpus = corpus.replace('“', ' " ')
 corpus = corpus.replace('”', ' " ')
-
-for spaced in ['.','-',',','!','?','(','—',')','\"']:
+for spaced in ['.','-',',','!','?','(','—',')']:
     corpus = corpus.replace(spaced, ' {0} '.format(spaced))
 
 print(f"length of corpus = {len(corpus)}")
-#print(f"Corpus[10000:15000] = {corpus[10000:15000]}")
 
+#Split corpus on words to get list of all words
 corpus_words = corpus.split(' ')
 corpus_words= [word for word in corpus_words if word != '']
 
 print(f"len(corpus_words = {len(corpus_words)}")
 
 
+#Get number of distinct words and store them in a dictionary. Words are the key and the value is the index
 distinct_words = list(set(corpus_words))
 word_idx_dict = {word: i for i, word in enumerate(distinct_words)}
 distinct_words_count = len(list(set(corpus_words)))
 print(f"Num of distinct words = {distinct_words_count}")
 
 
+
+
+
+#-----------------Start Markov Chain Training---------------------#
 k = 2
 sets_of_k_words = [' '.join(corpus_words[i:i+k]) for i, _ in enumerate(corpus_words[:-k])]
 
