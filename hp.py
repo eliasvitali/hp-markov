@@ -91,14 +91,34 @@ def weighted_choice(objects, weights):
         if x < weights[i]:
             return objects[i]
 
-from scipy.sparse import dok_matrix
+from scipy.sparse import dok_matrix                                                                     #Dok matrix (dic of keys) stores zeroes more efficiently to use less memory
+                                                                                                        #Matrix will have very few (<1%) non-zero elements so dataset is very sparse
 
-sets_count = len(list(set(sets_of_k_words)))
-next_after_k_words_matrix = dok_matrix((sets_count, len(distinct_words)))
+sets_count = len(list(set(sets_of_k_words)))                                                            #number of distinct sets of k words
+next_after_k_words_matrix = dok_matrix((sets_count, len(distinct_words)))                               #Initialize matrix of zeroes of size n x n where n = # of distinct sets of k words
 distinct_sets_of_k_words = list(set(sets_of_k_words))
 print(f"Distinct sets of {k} words = {len(distinct_sets_of_k_words)}")
-k_words_idx_dict = {word: i for i, word in enumerate(distinct_sets_of_k_words)}
+k_words_idx_dict = {word: i for i, word in enumerate(distinct_sets_of_k_words)}                         #turns the list into a dictionary
 
+
+#This loop populates the matrix
+#Each row represents a word in the corpus. e.g. if the corpus was only the sentence: "I am your father" would be a 4x4 matrix:
+# /       I AM YOUR FATHER
+#       I 0  0   0    0
+#      AM 0  0   0    0
+#    YOUR 0  0   0    0
+#  FATHER 0  0   0    0
+#
+#The columns will have a 1 if the row-column set of words exists in the distinct set of words list. So in the above example it would look like
+# /       I AM YOUR FATHER
+#       I 0  1   0    0
+#      AM 0  0   1    0
+#    YOUR 0  0   0    1
+#  FATHER 0  0   0    0
+#
+#We do this for all the distinct words and end up with a very sparse matrix where <1% of elements are non-zero. 
+#Hence we use a sparse matrix implementation called dok matrix to store our values
+#Code:
 for i, word in enumerate(sets_of_k_words[:-k]):
     word_sequence_idx = k_words_idx_dict[word]
     next_word_idx = word_idx_dict[corpus_words[i+k]]
