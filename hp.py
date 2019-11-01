@@ -75,12 +75,13 @@ sets_of_k_words = [' '.join(corpus_words[i:i+k]) for i, _ in enumerate(corpus_wo
 
 from random import random 
 
+#weighted_choice() returns randomly an element from the sequence of 'objects', 
+#the likelihood of the objects is weighted according 
+#to the sequence of 'weights', i.e. percentages. This is essentially just python's 
+#random.choice function but the native one doesn't support a list larger 
+#than 32, let alone tens of thousands.
 def weighted_choice(objects, weights):
-    """ returns randomly an element from the sequence of 'objects', 
-        the likelihood of the objects is weighted according 
-        to the sequence of 'weights', i.e. percentages."""
-
-    weights = np.array(weights, dtypei = np.float64)
+    weights = np.array(weights, dtype = np.float64)
     sum_of_weights = weights.sum()
     
     #Standardize
@@ -124,6 +125,8 @@ for i, word in enumerate(sets_of_k_words[:-k]):
     next_word_idx = word_idx_dict[corpus_words[i+k]]
     next_after_k_words_matrix[word_sequence_idx, next_word_idx] += 1
 
+#These functions sample the matrix. You give a 2-word chain and it will look and try to predict what the next words should be, and the one after that
+#alpha is a creativity variable. From 0 to 1, 0 being closer to the corpus and 1 approaching uniformity in the words that you see
 def sample_next_word_after_sequence(word_sequence, alpha = 0):
     next_word_vector = next_after_k_words_matrix[k_words_idx_dict[word_sequence]] + alpha
     likelihoods = next_word_vector/next_word_vector.sum()
@@ -143,7 +146,9 @@ def stochastic_chain(seed, chain_length = 15, seed_length = 2):
     return sentence
 
 
-things_to_try = ['his glasses', 'Ron said', 'He Who']
+things_to_try = ['his glasses', 'Ron said', 'Hagrid was']
 
-for s in things_to_try:
-    print(stochastic_chain(s))
+#for s in things_to_try:
+#    print(stochastic_chain(s))
+
+print(stochastic_chain("The wand", chain_length = 100))
