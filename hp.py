@@ -68,8 +68,10 @@ print(f"Num of distinct words = {distinct_words_count}")
 
 
 #-----------------Start Markov Chain Training---------------------#
-k = 2
-sets_of_k_words = [' '.join(corpus_words[i:i+k]) for i, _ in enumerate(corpus_words[:-k])]
+
+
+k = 2                                                                                                   #k = number of words it reads before it starts predicting the next one
+sets_of_k_words = [' '.join(corpus_words[i:i+k]) for i, _ in enumerate(corpus_words[:-k])]              #List containing all the distinct sets of k words in the corpus
 
 from random import random 
 
@@ -78,9 +80,10 @@ def weighted_choice(objects, weights):
         the likelihood of the objects is weighted according 
         to the sequence of 'weights', i.e. percentages."""
 
-    weights = np.array(weights, dtype=np.float64)
+    weights = np.array(weights, dtypei = np.float64)
     sum_of_weights = weights.sum()
-    # standardization:
+    
+    #Standardize
     np.multiply(weights, 1 / sum_of_weights, weights)
     weights = weights.cumsum()
     x = random()
