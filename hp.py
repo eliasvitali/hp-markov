@@ -148,7 +148,5 @@ def stochastic_chain(seed, chain_length = 15, seed_length = 2):
 
 things_to_try = ['his glasses', 'Ron said', 'Hagrid was']
 
-#for s in things_to_try:
-#    print(stochastic_chain(s))
-
-print(stochastic_chain("The wand", chain_length = 100))
+for s in things_to_try:
+    print(stochastic_chain(s, chain_length = 100), '\n')
