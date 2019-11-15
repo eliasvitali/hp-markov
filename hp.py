@@ -146,7 +146,18 @@ def stochastic_chain(seed, chain_length = 15, seed_length = 2):
     return sentence
 
 
-things_to_try = ['his glasses', 'Ron said', 'Hagrid was']
+things_to_try = []
+
+n = int(input("How many different passages do you want to try?\n"))
+
+for i in range(n):
+    word_comb = ''
+    word_comb = input("Enter the 2-word combination to try: ")
+    things_to_try.append(word_comb)
 
 for s in things_to_try:
-    print(stochastic_chain(s, chain_length = 100), '\n')
+    try:
+        print(f"Word combination: {s}")
+        print(stochastic_chain(s, chain_length = 150), '\n')
+    except:
+        print("This word combination wasn't found in the original corpus, please try a different combination.")
